@@ -1,0 +1,161 @@
+<div class="ventana_2"><div class="ven_modal" id="_2">
+<div class="cerrar"><a href="javascript:cerrarventana('.ventana_2');">x</a></div>
+
+ <form id="formregistro" name="formregistro" onsubmit="return false;">
+  
+    <h3>Editar Reporte:</h3>
+    <hr>
+    <table id="edi_rep">
+
+        <tr>
+            <td>Areá:</td>
+            <td><select id="area_e" name="area_e"></select></td>
+        </tr>
+
+        <tr>
+            <td>Empleado:</td>
+            <td>
+                <select id="emp_e" name="emp_e">
+                    <option selected="selected" value="">--elegir--</option>
+                </select>
+            </td>
+        </tr>
+
+        <tr id="conf"></tr>
+        <tr id="fece"></tr>
+        <tr id="fecr"></tr>
+
+        <tr>
+            <td>Lugar del suceso:</td>
+            <td>
+                <select id="lugsus_e" name="lugsus_e"></select>
+                <a href="javascript:openventana('.ventana_3');">Nuevo lugar</a>
+            </td>
+        </tr>
+
+        <tr id="obse"></tr>
+        <tr id="frec"></tr>
+
+        <tr>
+            <td>Cancelar reporte:</td>
+            <td>
+                <select id="canrep_e" name="canrep_e"></select>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <input type="hidden" id="IDREP" name="IDREP" value="0" />
+            </td>
+            <td>
+                <div class="buttons">
+                    <input type="submit" class="boton" value="Guardar" name="enviar" id="enviar">
+                    <input type="submit" class="boton" value="Eliminar reporte" name="eliminar" id="eliminar" style="background-color: #cb4335 ">
+                </div>
+            </td>
+        </tr>
+
+    </table>      
+ </form>
+</div></div>
+
+
+<script>
+(function(){
+    // CONFIGURA ESTAS CONSTANTES según tu entorno
+    const API = "http://127.0.0.1:5001";   // tu Flask corre en 5001
+    const TOKEN = "MI_TOKEN_SEGURO_12345"; // usa el mismo que en server
+
+    // Helper para leer respuesta segura
+    async function parseResponse(resp) {
+        const text = await resp.text();
+        try { return JSON.parse(text); } 
+        catch { return { raw: text }; }
+    }
+
+    // ---- Evento GUARDAR (submit) - lo dejamos tal cual salvo añadir token y endpoint correcto ----
+    const form = document.getElementById("formregistro");
+    form.addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        // Si el usuario pulsó el botón eliminar (no debería pasar ahora porque es type="button"), abortamos
+        if (e.submitter && e.submitter.id === "eliminar") return;
+
+        const id = document.getElementById("IDREP").value || "";
+        if (!id) { alert("ID del reporte inválido"); return; }
+
+        const payload = {
+            CONREP: document.getElementById("con_e")?.value || "",
+            FECEVE: document.getElementById("fecsus_e")?.value || "",
+            FECREP: document.getElementById("fecrep_e")?.value || "",
+            LUGREP: document.getElementById("lugsus_e")?.value || "",
+            OBSREP: (document.getElementById("obs_e")?.value || "").toUpperCase(),
+            FREREP: document.getElementById("freeve_e")?.value || "",
+            PERREP: document.getElementById("emp_e")?.value || "",
+            CANREP: document.getElementById("canrep_e")?.value || ""
+        };
+
+        try {
+            const resp = await fetch(`${API}/rep/${encodeURIComponent(id)}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${TOKEN}`
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const body = await parseResponse(resp);
+
+            if (!resp.ok) {
+                console.error("PUT /rep error", resp.status, body);
+                alert("Error al actualizar el reporte: " + (body.error || body.raw || resp.status));
+                return;
+            }
+
+            alert(body.message || "Reporte actualizado correctamente");
+            location.reload();
+        } catch (err) {
+            console.error("Error fetch PUT /rep:", err);
+            alert("Error de conexión al actualizar el reporte: " + err.message);
+        }
+    });
+
+    // ---- Evento ELIMINAR (click) ----
+    const btnEliminar = document.getElementById("eliminar");
+    btnEliminar.addEventListener("click", async function(e) {
+        e.preventDefault();
+
+        const id = document.getElementById("IDREP").value || "";
+        if (!id) { alert("ID del reporte inválido"); return; }
+
+        if (!confirm("¿Seguro que deseas eliminar este reporte? Esta acción no puede deshacerse.")) return;
+
+        try {
+            const resp = await fetch(`${API}/rep/${encodeURIComponent(id)}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${TOKEN}`
+                }
+            });
+
+            const body = await parseResponse(resp);
+
+            if (!resp.ok) {
+                console.error("DELETE /rep error", resp.status, body);
+                alert("Error al eliminar el reporte: " + (body.error || body.raw || resp.status));
+                return;
+            }
+
+            alert(body.message || "Reporte eliminado correctamente");
+            location.reload();
+        } catch (err) {
+            console.error("Error fetch DELETE /rep:", err);
+            alert("Error de conexión al eliminar el reporte: " + err.message);
+        }
+    });
+
+})();
+</script>
+
+

@@ -1,0 +1,148 @@
+# Python
+# ======
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.virtualenv/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class 
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Flask specific
+instance/
+.webassets-cache
+*.db
+*.sqlite
+*.sqlite3
+
+# Database & Storage
+# ==================
+server/storage/*
+!server/storage/.gitkeep
+
+# Migrations (keep the folder structure but ignore generated files if needed)
+# Uncomment the following if you want to ignore migration files:
+# server/migrations/versions/*.py
+
+# PHP
+# ===
+# Composer
+vendor/
+composer.lock
+
+# Logs and databases
+*.log
+*.sql
+
+# OS Files
+# ========
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# IDE & Editors
+# =============
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# JetBrains
+.idea/
+*.swp
+*.swo
+
+# Temporary Files
+# ===============
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+
+# Environment & Config
+# ====================
+.env
+.env.local
+.env.*.local
+*.secret
+
+# Documentation builds
+docs/_build/
+client/docs/
+
+# Uploaded/Generated Files
+# =========================
+client/fotos/*
+!client/fotos/.gitkeep
+client/documentos/*
+!client/documentos/.gitkeep
+
+# PDF libraries (if these are vendored, consider keeping them ignored)
+# Uncomment if you don't want to track these:
+# client/dompdf/
+# client/dompdf1/
+
+# Node modules (if you add any JS tooling later)
+node_modules/
+npm-debug.log
+yarn-error.log
