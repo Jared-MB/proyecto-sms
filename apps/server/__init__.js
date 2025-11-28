@@ -1,7 +1,5 @@
 const { spawn } = require("node:child_process");
 
-// COMMAND: venv/Scripts/activate && python ./app.py
-
 const pythonProcess = spawn("../../venv/Scripts/python.exe", ["./app.py"], {
     stdio: "inherit",
     cwd: __dirname,
