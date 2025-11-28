@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "php -S localhost:8000"
+    "dev": "node __init__.js"
   },
   "keywords": [],
   "author": "",
