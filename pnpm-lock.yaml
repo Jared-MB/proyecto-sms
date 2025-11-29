@@ -19,10 +19,6 @@ importers:
 
   apps/server: {}
 
-  client: {}
-
-  server: {}
-
 packages:
 
   /@biomejs/biome@2.3.8:
