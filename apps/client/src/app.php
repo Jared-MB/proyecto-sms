@@ -2,7 +2,7 @@
 session_start();
 if (isset($_SESSION["user"])){
     $user=$_SESSION['user'];
-    $theme=$_SESSION['theme']; 
+    $theme= isset($_SESSION['theme']) ? $_SESSION['theme'] : 2; 
 
 	if ($_SESSION["nivel"]<=2){ if($theme==1){ include("theme.php"); }else{include("theme_2.php");}}
     if ($_SESSION["nivel"]==3){ if($theme==1){ include("theme_menu_dif.php"); }else{include("theme_2_menu_dif.php");} }
