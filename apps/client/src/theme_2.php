@@ -62,7 +62,7 @@
 		<div class="row">
 			<div class="col-lg-12 col-md-12 col-sm-12 col-xs12 ">
 				<div class="title_sec" >
-					<h1>Bienvenido <?php echo utf8_encode($_SESSION["nombre"]); ?></h1>
+					<h1>Bienvenido <?php echo $_SESSION["nombre"]; ?></h1>
 				</div>			
 			</div>
 			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
