@@ -1,6 +1,8 @@
 <?php
 
-require_once __DIR__ . "/../core/services/http.php";
+declare(strict_types=1);
+
+require_once __DIR__ . "/../core/reports/reports_server.php";
 
 session_start();
 
@@ -15,9 +17,8 @@ if (!isset($_SESSION["nivel"]) || $_SESSION["nivel"] > 2) {
 }
 
 $user = $_SESSION['user'];
-$api_url = getenv("API_URL");
 
-$reportes = http_request("GET", "$api_url/reportes-completo/$user");
+$reportes = $reports_server->get_reports_by_user($user);
 
 if (isset($reportes["error"])) {
     $api_error = $reportes["error"] . (isset($reportes["raw"]) ? " | Raw: " . substr($reportes["raw"], 0, 300) : "");
@@ -97,7 +98,7 @@ if (isset($reportes["error"])) {
 
                             foreach ($reportes as $row) {
                                 // Uso de null coalescing para evitar undefined index
-                                $id = $row['IDEREP'] ?? '';
+                                $id = strval($row['IDEREP'] ?? '');
                                 $fec_rep_raw = $row['FECREP'] ?? '';
                                 $fec_eve_raw = $row['FECEVE'] ?? '';
                                 $fre = $row['FREREP'] ?? '';
