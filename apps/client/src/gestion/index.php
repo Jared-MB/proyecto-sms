@@ -5,16 +5,11 @@ if (isset($_SESSION["user"])) {
         $user = $_SESSION['user'];
 ?>
         <html>
-
         <script src="../js/jquery-3.3.1.min.js"></script>
         <script src="../js/control.js"></script>
         <script type="text/javascript" language="javascript" src="../TableFilter-master\dist\tablefilter/tablefilter.js"></script>
-
         <?php
         require_once("head.html");
-
-
-
         $theme = $_SESSION['theme'] ?? 1;
         if ($theme == 1) {
             include("menu_index.html");
@@ -22,18 +17,13 @@ if (isset($_SESSION["user"])) {
             include("menus_2/menu_index.html");
         }
         ?>
-
-
         <div class="ventana_3">
             <?php include("ventanas_modales/e_ges.html"); ?>
         </div>
 
-
-
         <body style="background-color:#eee;">
             <div style="height:92%;overflow-y: scroll;">
                 <div class="reporte">
-
                     <?php require_once("../conex/conex.php");
                     mysqli_select_db($conex, $database_conex);
                     $query_pel = "SELECT IDEREP,FECREP,CONPEL,OBJPEL,ACTPEL,CATEPEL,FECPEL,GENPEL,NOMGESPEL,ESTMON,FECCIE,METIDEPEL FROM REP,PEL,MON WHERE IDEREP=REPPEL && PELMON=REPPEL ";
@@ -45,11 +35,7 @@ if (isset($_SESSION["user"])) {
                         <h2 align="center">NO HAY REPORTES EN GESTIÓN </h2>
                     <?php } ?>
                     <?php if ($totalRows_pel > 0) {  ?>
-
-
                         <div class="tabla reportes">
-
-
                             <table id="tabla_ges">
                                 <thead>
                                     <tr>
@@ -65,25 +51,14 @@ if (isset($_SESSION["user"])) {
                                         <th rowspan="2">ESTATUS</th>
                                         <th rowspan="2">VER GESTIÓN</th>
                                         <th rowspan="2"></th>
-
-
-
                                     </tr>
                                     <tr>
-
                                         <th style="color:#fff000">CONDICIÓN</th>
                                         <th style="color:#fff000">OBJETO</th>
                                         <th style="color:#fff000">ACTIVIDAD</th>
                                         <th bgcolor="#ccc" style="color:#000">PELIGRO GENÉRICO</th>
-
-
-
-
-
                                     </tr>
-
                                 </thead>
-
                                 <?php
                                 do {
                                     $iderep = $row_pel['IDEREP'];
@@ -114,22 +89,12 @@ if (isset($_SESSION["user"])) {
                                                     <a href="javascript:openventana_var('.ventana_3',<?php echo $iderep; ?>,'IDREP','g3');"><IMG height='20px' SRC='../imagenes/edit.png'></a>
                                                 <?php } ?>
                                             </td>
-
-
-
-
                                         </tr>
                                     <?php } while ($row_pel = mysqli_fetch_assoc($pel)); ?>
                                     </tbody>
                             </table>
-
                         </div>
-
                     <?php } ?>
-
-
-
-
                 </div>
             </div>
         </body>
@@ -138,7 +103,6 @@ if (isset($_SESSION["user"])) {
         </script>
 
         </html>
-
 <?php
     } else {
         session_destroy();
