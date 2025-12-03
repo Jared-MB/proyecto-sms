@@ -2,18 +2,13 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . "/../core/auth/logout.php";
 require_once __DIR__ . "/../core/reports/reports_server.php";
 
 session_start();
 
-if (!isset($_SESSION["user"])) {
-    header("Location: ../");
-    exit;
-}
-if (!isset($_SESSION["nivel"]) || $_SESSION["nivel"] > 2) {
-    session_destroy();
-    header("Location: ../");
-    exit;
+if (!isset($_SESSION["user"]) || !isset($_SESSION["nivel"]) || $_SESSION["nivel"] > 2) {
+    logout();
 }
 
 $user = $_SESSION['user'];

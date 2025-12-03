@@ -35,6 +35,65 @@ class Http
     }
 
     /**
+     * Execute a POST request with multipart/form-data (for file uploads)
+     *
+     * @param string $url
+     * @param array $formData Array with form fields and files
+     * @return array
+     * @throws RuntimeException
+     */
+    public static function postMultipart(string $url, array $formData): array
+    {
+        $curl = curl_init();
+
+        // Process the form data to handle file uploads
+        $postFields = [];
+        foreach ($formData as $key => $value) {
+            if (is_array($value) && isset($value['tmp_name'])) {
+                // This is a file from $_FILES
+                $postFields[$key] = new \CURLFile(
+                    $value['tmp_name'],
+                    $value['type'] ?? 'application/octet-stream',
+                    $value['name'] ?? 'file'
+                );
+            } else {
+                // Regular form field
+                $postFields[$key] = $value;
+            }
+        }
+
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $postFields);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        // Headers - don't set Content-Type, let curl set it with boundary
+        $headers = [
+            "Authorization: Bearer " . API_TOKEN,
+            "Accept: application/json"
+        ];
+
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+        $result = curl_exec($curl);
+
+        if (curl_errno($curl)) {
+            $error = curl_error($curl);
+            curl_close($curl);
+            throw new \RuntimeException("Curl error: " . $error);
+        }
+
+        curl_close($curl);
+
+        $decoded = json_decode($result, true);
+        if ($decoded === null && json_last_error() !== JSON_ERROR_NONE) {
+            throw new \RuntimeException("Respuesta no válida del servidor");
+        }
+
+        return $decoded;
+    }
+
+    /**
      * Execute a PUT request
      *
      * @param string $url

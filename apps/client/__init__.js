@@ -1,17 +1,15 @@
 const { spawn } = require("node:child_process");
-const path = require("node:path");
 
-// php -S localhost:8000
+const url = "http://sms:8080";
+const command =
+	process.platform === "win32"
+		? "start"
+		: process.platform === "darwin"
+			? "open"
+			: "xdg-open";
 
-const phpProcess = spawn("php", ["-S", "localhost:8000"], {
-    stdio: "inherit",
-    cwd: path.join(__dirname, "src"),
-});
+const browserProcess = spawn(command, [url], { shell: true });
 
-phpProcess.on("close", (code) => {
-    console.log(`PHP process exited with code ${code}`);
-});
-
-phpProcess.on("error", (error) => {
-    console.error(`PHP process error: ${error.message}`);
+browserProcess.on("error", (error) => {
+	console.error(`Browser process error: ${error.message}`);
 });

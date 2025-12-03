@@ -13,7 +13,11 @@ from routes import registrar_endpoints
 # ---------------------------------------------------------
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app, 
+     supports_credentials=True,
+     allow_headers=["Content-Type", "Authorization"],
+     expose_headers=["Content-Type", "Authorization"],
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
 registrar_endpoints(app)
 
 # MySQL

@@ -4,5 +4,8 @@
 	"description": "",
 	"keywords": [],
 	"author": "",
+	"scripts": {
+		"dev": "node __init__.js"
+	},
 	"license": "ISC"
 }
