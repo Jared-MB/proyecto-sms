@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../core/reports/reports_server.php';
-require_once __DIR__ . '/../../core/auth/logout.php';
+require_once __DIR__ . '/../../core/auth/auth-service.php';
 
 session_start();
 
@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 if (!isset($_SESSION["user"]) || !isset($_SESSION["nivel"]) || $_SESSION["nivel"] > 2) {
-    logout('../../');
+    $auth_service->logout('../../');
 }
 
 $filename = $_POST['filename'];

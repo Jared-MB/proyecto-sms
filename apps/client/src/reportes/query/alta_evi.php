@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../core/reports/reports_server.php';
-require_once __DIR__ . '/../../core/auth/logout.php';
+require_once __DIR__ . '/../../core/auth/auth-service.php';
 
 session_start();
 
 if (!isset($_SESSION['user'])) {
-    logout('../../');
+    $auth_service->logout('../../');
 }
 
 if (!isset($_FILES['evi'])) {

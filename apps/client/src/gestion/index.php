@@ -2,10 +2,10 @@
 session_start();
 
 require_once __DIR__ . "/../core/gestion/gestion_server.php";
-require_once __DIR__ . "/../core/auth/logout.php";
+require_once __DIR__ . "/../core/auth/auth-service.php";
 
 if (!isset($_SESSION["user"]) || !isset($_SESSION["nivel"]) || $_SESSION["nivel"] > 2) {
-    logout('../');
+    $auth_service->logout('../');
 }
 
 $user = $_SESSION['user'];

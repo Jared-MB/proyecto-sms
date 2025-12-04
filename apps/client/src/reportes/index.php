@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . "/../core/auth/logout.php";
+require_once __DIR__ . "/../core/auth/auth-service.php";
 require_once __DIR__ . "/../core/reports/reports_server.php";
 
 session_start();
 
 if (!isset($_SESSION["user"]) || !isset($_SESSION["nivel"]) || $_SESSION["nivel"] > 2) {
-    logout();
+    $auth_service->logout();
 }
 
-$user = $_SESSION['user'];
+$user = strval($_SESSION["user"]);
 
 $reportes = $reports_server->get_reports_by_user($user);
 

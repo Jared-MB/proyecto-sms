@@ -1,5 +1,4 @@
 <?php
-session_start();
-session_destroy();
-header("Location: ../" );
-?>
+require_once __DIR__ . "/../../core/auth/auth-service.php";
+
+$auth_service->logout();
