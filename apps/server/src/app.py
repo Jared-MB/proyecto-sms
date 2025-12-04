@@ -4,7 +4,7 @@ import os, uuid
 from flask_migrate import Migrate
 from config import BASE_STORAGE, API_TOKEN
 from flask_cors import CORS
-from models import db, Rep, Lug, Per, Emp   # <-- AÑADIDO Per
+from models import db, Rep, Lug, Per, Emp, Coo, Car
 from routes import registrar_endpoints
 
 
@@ -96,9 +96,144 @@ def reportes_completo_por_usuario(user_id):
     return jsonify(resultados), 200
 
 
+@app.route('/reportes', methods=['POST'])
+def crear_reporte():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "No input data provided"}), 400
+
+    # Extraer datos
+    confidencial = data.get("con")
+    fecsus = data.get("fecsus")
+    fecrep = data.get("fecrep")
+    lugsus = data.get("lugsus")
+    obs = data.get("obs", "")
+    freeve = data.get("freeve")
+    emp = data.get("emp")
+
+    # Validar campos requeridos (básico)
+    if not all([confidencial, fecsus, fecrep, lugsus, freeve, emp]):
+         return jsonify({"error": "Missing required fields"}), 400
+
+    # Transformaciones
+    obs = obs.upper() if obs else ""
+
+    # Generar ID manual (replicando lógica PHP)
+    # SELECT IDEREP FROM REP ORDER BY IDEREP DESC LIMIT 1
+    last_rep = db.session.query(Rep).order_by(Rep.IDEREP.desc()).first()
+    if last_rep:
+        new_id = last_rep.IDEREP + 1
+    else:
+        new_id = 1
+
+    # Crear nuevo objeto Rep
+    new_rep = Rep(
+        IDEREP=new_id,
+        CONREP=int(confidencial),
+        FECEVE=fecsus,  # Asumiendo formato correcto YYYY-MM-DD
+        FECREP=fecrep,  # Asumiendo formato correcto YYYY-MM-DD HH:MM:SS
+        FREREP=freeve,
+        OBSREP=obs,
+        LUGREP=int(lugsus),
+        PERREP=int(emp),
+        CANREP=0
+    )
+
+    try:
+        db.session.add(new_rep)
+        db.session.commit()
+        return jsonify({
+            "message": "Reporte creado exitosamente",
+            "IDEREP": new_id
+        }), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+@app.route('/gestion/reportes', methods=['GET'])
+def get_gestion_reportes():
+    from models import Pel, Mon
+
+    query = db.session.query(
+        Rep.IDEREP,
+        Rep.FECREP,
+        Pel.FECPEL,
+        Pel.NOMGESPEL,
+        Pel.CONPEL,
+        Pel.OBJPEL,
+        Pel.ACTPEL,
+        Pel.CATEPEL,
+        Pel.GENPEL,
+        Pel.METIDEPEL,
+        Mon.ESTMON
+    ).join(
+        Pel, Rep.IDEREP == Pel.REPPEL
+    ).join(
+        Mon, Pel.REPPEL == Mon.PELMON
+    )
+
+    resultados = []
+    for r in query.all():
+        resultados.append({
+            "IDEREP": r.IDEREP,
+            "FECREP": r.FECREP,
+            "FECPEL": r.FECPEL,
+            "NOMGESPEL": r.NOMGESPEL,
+            "CONPEL": r.CONPEL,
+            "OBJPEL": r.OBJPEL,
+            "ACTPEL": r.ACTPEL,
+            "CATEPEL": r.CATEPEL,
+            "GENPEL": r.GENPEL,
+            "METIDEPEL": r.METIDEPEL,
+            "ESTMON": r.ESTMON
+        })
+
+    return jsonify(resultados), 200
+
+
 # ---------------------------------------------------------
 # RUTAS DE ARCHIVOS (SIN CAMBIOS)
 # ---------------------------------------------------------
+
+@app.route('/lugares', methods=['GET'])
+def get_lugares():
+    lugares = Lug.query.all()
+    return jsonify([{"IDELUG": l.IDELUG, "NOMLUG": l.NOMLUG} for l in lugares]), 200
+
+
+@app.route('/coordinaciones', methods=['GET'])
+def get_coordinaciones():
+    areas = Coo.query.order_by(Coo.NOMCOO).all()
+    return jsonify([{"IDECOO": a.IDECOO, "NOMCOO": a.NOMCOO} for a in areas]), 200
+
+
+@app.route('/empleados', methods=['GET'])
+def get_empleados():
+    area_id = request.args.get('area')
+    if not area_id:
+        return jsonify([]), 200
+
+    # Query replicating: SELECT IDEPER,NOMEMP,APPEMP,APMEMP FROM COO,CAR,EMP,PER ...
+    query = db.session.query(Per.IDEPER, Emp.NOMEMP, Emp.APPEMP, Emp.APMEMP)\
+        .join(Emp, Per.EMPPER == Emp.IDEEMP)\
+        .join(Car, Per.CARPER == Car.IDECAR)\
+        .join(Coo, Car.COOCAR == Coo.IDECOO)\
+        .filter(Coo.IDECOO == area_id)
+
+    resultados = []
+    for row in query.all():
+        resultados.append({
+            "IDEPER": row.IDEPER,
+            "NOMEMP": row.NOMEMP,
+            "APPEMP": row.APPEMP,
+            "APMEMP": row.APMEMP
+        })
+    
+    return jsonify(resultados), 200
+
 
 @app.route('/upload', methods=['POST'])
 def upload():

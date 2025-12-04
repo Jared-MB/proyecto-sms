@@ -137,15 +137,9 @@ class Http
             case "POST":
                 curl_setopt($curl, CURLOPT_POST, 1);
                 if ($data) {
-                    // FormData handled in JS; here JSON endpoints expect json
-                    // If data is array/object, strict typing might require handling,
-                    // but legacy code passed $data directly for POST if it wasn't json_encoded by caller?
-                    // Looking at legacy: if ($data) curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-                    // It seems legacy expected $data to be pre-formatted or an array for multipart/form-data?
-                    // The comment said "FormData handled in JS; here JSON endpoints expect json"
-                    // But legacy code didn't json_encode for POST, only for PUT.
-                    // We will keep behavior: pass $data as is for POST.
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                    // Send JSON for POST requests to match Flask endpoints
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+                    // Will add Content-Type header below
                 }
                 break;
             case "PUT":
@@ -175,9 +169,10 @@ class Http
         // Add Accept header for JSON
         $headers[] = "Accept: application/json";
 
-        // Note: Legacy code didn't explicitly set Content-Type for POST, relying on curl default or data type.
-        // For PUT it sent JSON but didn't set Content-Type: application/json explicitly in headers array
-        // (though it might be good practice to do so, I will stick to legacy behavior to avoid breaking things).
+        // Add Content-Type for POST and PUT requests with data
+        if (($method === "POST" || $method === "PUT") && $data) {
+            $headers[] = "Content-Type: application/json";
+        }
 
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 

@@ -7,8 +7,8 @@ require_once __DIR__ . '/../../core/auth/logout.php';
 
 session_start();
 
-if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
-    http_response_code(405);
+if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
+    http_response_code(405); // Method Not Allowed
     exit;
 }
 
@@ -24,8 +24,20 @@ if (!$id) {
     exit;
 }
 
+$input = json_decode(file_get_contents('php://input'), true);
+
 try {
-    $response = $reports_server->delete_report($id);
+    $data = [
+        'confidential' => $input['CONREP'] ?? 0,
+        'date_event' => $input['FECEVE'] ?? '',
+        'date_report' => $input['FECREP'] ?? '',
+        'location' => $input['LUGREP'] ?? '',
+        'observation' => $input['OBSREP'] ?? '',
+        'frequency' => $input['FREREP'] ?? '',
+        'employee' => $input['PERREP'] ?? '',
+        'cancelled' => $input['CANREP'] ?? 0
+    ];
+    $response = $reports_server->update_report($id, $data);
     header('Content-Type: application/json');
     echo json_encode($response);
 } catch (Exception $e) {

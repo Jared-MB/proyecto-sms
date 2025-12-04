@@ -1,54 +1,62 @@
 <div class="ventana">
     <div class="ven_modal" id="_1">
         <div class="cerrar"><a href="javascript:cerrarventana('.ventana');">x</a></div>
-        <form method="post" id="form_rep" action="" name="form_rep">
+        <form id="form_rep">
             <h3>Nuevo Reporte:</h3>
             <hr>
             <table>
                 <tr>
                     <td>Areá:</td>
-                    <td><select id="area" name="area">
-
-                        </select>
+                    <td>
+                        <select id="area-select" name="area"></select>
                     </td>
                 </tr>
                 <tr>
                     <td>Empleado:</td>
-                    <td><select id="emp" name="emp">
+                    <td>
+                        <select id="employees-select" name="employee">
                             <option selected="selected" value="">--ELEGIR--</option>
-
-                        </select></td>
+                        </select>
+                    </td>
                 </tr>
                 <tr>
                     <td>Confidencial:</td>
-                    <td> <select id="con" name="con">
+                    <td>
+                        <select id="con" name="confidential">
                             <option selected="selected" value=0>--ELEGIR--</option>
                             <option value=1>SI</option>
                             <option value=0>NO</option>
-                        </select></td>
+                        </select>
+                    </td>
                 </tr>
                 <tr>
                     <td>Fecha del suceso:</td>
-                    <td> <input type="date" id="fecsus" name="fecsus"></td>
+                    <td>
+                        <input type="date" id="fecsus" name="date_event">
+                    </td>
                 </tr>
                 <tr>
                     <td>Fecha del reporte:</td>
-                    <td> <input type="date" id="fecrep" name="fecrep" /></td>
+                    <td>
+                        <input type="date" id="fecrep" name="date_report" />
+                    </td>
                 </tr>
                 <tr>
                     <td>Lugar del suceso:</td>
-                    <td> <select id="lugsus" name="lugsus">
-                        </select><a href="javascript:openventana('.ventana_3');">Nuevo lugar</a> </td>
-
+                    <td>
+                        <select id="locations-select" name="location">
+                        </select>
+                        <a href="javascript:openventana('.ventana_3');">Nuevo lugar</a>
+                    </td>
                 </tr>
 
                 <tr>
                     <td>Descripción del evento:</td>
-                    <td><textarea rows="4" cols="50" id="obs" name="obs"></textarea> </td>
+                    <td><textarea rows="4" cols="50" id="obs" name="observation"></textarea> </td>
                 </tr>
                 <tr>
                     <td>Frecuencia del evento:</td>
-                    <td> <select id="freeve" name="freeve">
+                    <td> <select id="freeve" name="frequency">
                             <option selected="selected" value="NINGUNA">NINGUNA</option>
                             <option value="ES LA PRIMERA VEZ">ES LA PRIMERA VEZ</option>
                             <option value="EXTREMADAMENTE IMPROBABLE">EXTREMADAMENTE IMPROBABLE</option>
@@ -60,12 +68,11 @@
 
                         </select><a href="javascript:openventana('.ventana_4');">?</a></td>
                 </tr>
-
                 <tr>
                     <td></td>
                     <td>
                         <div class="buttons">
-                            <input type="submit" class="boton" value="Guardar" name="enviar" id="enviar">
+                            <button type="submit" class="boton" id="enviar">Guardar</button>
                         </div>
                     </td>
                 </tr>

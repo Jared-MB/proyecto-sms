@@ -1,20 +1,14 @@
-<?php require_once("../../conex/conectar.php");
-$con=conectar();
-$con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$idecoo=$_GET['IDECOO'];
-$consulta="SELECT IDEPER,NOMEMP,APPEMP,APMEMP FROM COO,CAR,EMP,PER WHERE IDEEMP=EMPPER && CARPER=IDECAR && COOCAR=IDECOO && IDECOO='$idecoo' ";
- $sql = $con->prepare($consulta);
- $sql->execute();
- $resultado = $sql->fetchAll(PDO::FETCH_ASSOC);
-function utf8_converter($array)
-{
-    array_walk_recursive($array, function(&$item, $key){
-        if(!mb_detect_encoding($item, 'utf-8', true)){
-                $item = utf8_encode($item);
-        }
-    });
- 
-    return $array;
+<?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/../../core/reports/reports_server.php';
+
+try {
+    $area_id = $_GET['IDECOO'] ?? '';
+    $employees = $reports_server->get_employees($area_id);
+    echo json_encode($employees);
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(['error' => $e->getMessage()]);
 }
-$r2=utf8_converter($resultado);
-echo json_encode($r2,JSON_UNESCAPED_UNICODE);

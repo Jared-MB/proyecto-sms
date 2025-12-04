@@ -158,7 +158,7 @@ $files = $reports_server->get_files_by_user($user);
 
                 const formData = new FormData(e.target);
 
-                const response = await fetch('/api/reports/upload.php', {
+                const response = await fetch('/api/reports/upload-file.php', {
                     method: 'POST',
                     body: formData,
                 });
@@ -182,7 +182,7 @@ $files = $reports_server->get_files_by_user($user);
                 const payload = new FormData()
                 payload.append('filename', filename)
 
-                const response = await fetch('/api/reports/delete.php', {
+                const response = await fetch('/api/reports/delete-file.php', {
                     method: 'POST',
                     body: payload,
                 });

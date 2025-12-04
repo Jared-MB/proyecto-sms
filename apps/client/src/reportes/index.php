@@ -27,15 +27,16 @@ if (isset($reportes["error"])) {
 <html>
 
 <head>
+    <meta charset="utf-8">
+    <title>Reportes</title>
     <?php include("header.html"); ?>
     <script src="../TableFilter-master/dist/tablefilter/tablefilter.js"></script>
     <script src="../js/jquery-3.3.1.min.js"></script>
     <script src="../js/control.js"></script>
     <script src="js/jquery.validate.min.js"></script>
-    <script src="js/validar_rep.js"></script>
+    <!-- <script src="js/validar_rep.js"></script> -->
     <script src="js/validar_lug.js"></script>
-    <meta charset="utf-8">
-    <title>Reportes</title>
+    <script type='module' src='./ventanas_modales/new-report.js'></script>
 </head>
 
 <body style="background-color:#eee;">
@@ -48,7 +49,7 @@ if (isset($reportes["error"])) {
         include("menu_rep_2.html");
     }
 
-    include("ventanas_modales/n_rep.html");
+    include("ventanas_modales/new-report.html");
     include("ventanas_modales/e_rep.html");
     include("ventanas_modales/n_lugar.html");
     include("ventanas_modales/ayuda.html");
@@ -166,17 +167,9 @@ if (isset($reportes["error"])) {
                 </div>
             </div>
 
-        <?php } // else hay reportes 
+        <?php }
         ?>
     </div>
-
-    <script>
-        // Mantengo tus funciones JS tal cual (recomendación: mover a archivo .js si no está)
-        cargar_coo("area");
-        cargar_lug();
-        cargar_fac();
-        filtro_rep();
-    </script>
 </body>
 
 </html>

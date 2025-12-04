@@ -7,8 +7,8 @@ require_once __DIR__ . '/../../core/auth/logout.php';
 
 session_start();
 
-if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
-    http_response_code(405);
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(404);
     exit;
 }
 
@@ -16,19 +16,17 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["nivel"]) || $_SESSION["nivel"
     logout('../../');
 }
 
-$id = $_GET['id'] ?? '';
-
-if (!$id) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Missing ID']);
-    exit;
-}
+$filename = $_POST['filename'];
 
 try {
-    $response = $reports_server->delete_report($id);
+    $response = $reports_server->delete_file($_SESSION['user'], $filename);
     header('Content-Type: application/json');
     echo json_encode($response);
 } catch (Exception $e) {
+    header('Content-Type: application/json');
     http_response_code(500);
-    echo json_encode(['error' => $e->getMessage()]);
+    echo json_encode([
+        'error' => 'Failed to delete file',
+        'message' => $e->getMessage()
+    ]);
 }

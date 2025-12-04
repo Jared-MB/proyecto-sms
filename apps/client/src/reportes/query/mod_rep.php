@@ -1,33 +1,29 @@
-<?php require_once('../../conex/conex.php'); 
-mysqli_select_db($conex, $database_conex);
+<?php
 
-if(isset($_POST['eliminar'])){
-	$iderep=$_POST['IDREP'];
-	$eliminar1=sprintf("DELETE FROM `PEL` WHERE REPPEL=$iderep");
-	$resultado1=mysqli_query($conex, $eliminar1) or die (mysqli_error($conex));
-	$eliminar2=sprintf("DELETE FROM `REP` WHERE IDEREP=$iderep");
-	$resultado2=mysqli_query($conex, $eliminar2) or die (mysqli_error($conex));
+declare(strict_types=1);
 
-	echo "	Reporte eliminado";
+require_once __DIR__ . '/../../core/reports/reports_server.php';
+
+$id = $_POST['IDREP'] ?? '';
+
+try {
+	if (isset($_POST['eliminar'])) {
+		$reports_server->delete_report($id);
+		echo "Reporte eliminado";
+	} else {
+		$data = [
+			'confidential' => $_POST["con_e"] ?? 0,
+			'date_event' => $_POST["fecsus_e"] ?? '',
+			'date_report' => $_POST["fecrep_e"] ?? '',
+			'location' => $_POST["lugsus_e"] ?? '',
+			'observation' => mb_strtoupper($_POST["obs_e"] ?? ''),
+			'frequency' => $_POST["freeve_e"] ?? '',
+			'employee' => $_POST["emp_e"] ?? '',
+			'cancelled' => $_POST["canrep_e"] ?? 0
+		];
+		$reports_server->update_report($id, $data);
+	}
 	header("Location:../index.php");
-    
-} else {
-
-$iderep=$_POST['IDREP'];
-$confidencial = $_POST["con_e"];
-$fecsus = $_POST["fecsus_e"];
-$fecrep = $_POST["fecrep_e"];
-$lugsus = $_POST["lugsus_e"];
-$obs = $_POST["obs_e"];
-$obs = mb_strtoupper($obs);
-$freeve=$_POST["freeve_e"];
-$canrep=$_POST["canrep_e"];
-$emp=$_POST["emp_e"];
-
-$update=sprintf("UPDATE REP SET CONREP='$confidencial', FECEVE='$fecsus' ,FECREP='$fecrep', OBSREP='$obs',FREREP='$freeve',PERREP=$emp, CANREP=$canrep WHERE IDEREP=$iderep");
-$Result1=mysqli_query($conex, $update) or die (mysqli_error($conex));
-header("Location:../index.php");
-
+} catch (Exception $e) {
+	die($e->getMessage());
 }
-
-?>
